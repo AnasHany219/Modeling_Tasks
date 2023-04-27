@@ -122,6 +122,78 @@ int main()
 
     return 0;
 }
+/*---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int main(){
+    int n;
+    cout << "Enter a number of customers: ";
+    cin >> n;
+    vector<int>InterArrivalTime(n+1);
+    double Total_InterArrivalTime = 0;
+
+    vector<int>ArrivalTime(n+1);
+
+    vector<int>ServiceTime(n+1);
+    double Total_ServiceTime = 0;
+
+    vector<int>TimeServiceBegins(n+1, 0);
+
+    vector<int>TimeServiceEnds(n+1, 0);
+
+    vector<int>WaitingTime(n+1);
+    double Total_WaitingTime = 0;
+
+    vector<int>TimeCustomer(n+1);
+    double Total_TimeCustomer = 0;
+
+    vector<int>IdleTime(n+1);
+    double Total_IdleTime = 0;
+
+    for(int i = 1; i <= n; i++){
+        cout << "Inter-arrival Time and Service Time: ";
+        cin >> InterArrivalTime[i];
+        Total_InterArrivalTime += InterArrivalTime[i];
+
+        ArrivalTime[i] = Total_InterArrivalTime;
+
+        cin >> ServiceTime[i];
+        Total_ServiceTime += ServiceTime[i];
+
+        if(TimeServiceEnds[i-1] >= ArrivalTime[i])
+            TimeServiceBegins[i] = TimeServiceEnds[i-1];
+        else
+            TimeServiceBegins[i] = ArrivalTime[i];
+
+        TimeServiceEnds[i] = TimeServiceBegins[i] + ServiceTime[i];
+
+        WaitingTime[i] = TimeServiceBegins[i] - ArrivalTime[i];
+        Total_WaitingTime += WaitingTime[i];
+
+        TimeCustomer[i] = WaitingTime[i] + ServiceTime[i];
+        Total_TimeCustomer += TimeCustomer[i];
+
+        IdleTime[i] = TimeServiceBegins[i] - TimeServiceEnds[i-1];
+        Total_IdleTime += IdleTime[i];
+    }
+    cout << "\nCustomer\tInter-arrival Time\tArrival Time\tService Time\t"
+         << "Service Time Begins\tService Time Ends\tWaiting Time\tTime Customer\tIdle Time\n";
+
+    for(int i = 1; i <= n; i++){
+        cout << i << "\t\t" << InterArrivalTime[i] << "\t\t\t" << ArrivalTime[i] << "\t\t" << ServiceTime[i] << "\t\t";
+        cout << TimeServiceBegins[i] << "\t\t\t" << TimeServiceEnds[i] << "\t\t\t" << WaitingTime[i] << "\t\t" << TimeCustomer[i] << "\t\t" << IdleTime[i] << endl;
+    }
+    cout << "Total\t\t" << Total_InterArrivalTime << "\t\t\t\t\t" << Total_ServiceTime << "\t\t\t\t\t\t\t\t";
+    cout << Total_WaitingTime << "\t\t" << Total_TimeCustomer << "\t\t" << Total_IdleTime << endl << endl;
+
+    cout << "Average service time: " << Total_ServiceTime/n << endl;
+    cout << "Average Wait Time: " << Total_WaitingTime/n << endl;
+    cout << "Average Time Customer: " << Total_TimeCustomer/n << endl;
+    return 0;
+}
 /*
 Enter the number of customer: 6
 Enter a Inter-arrival Time & Service Time: 0 4
